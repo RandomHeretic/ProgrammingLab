@@ -1,11 +1,17 @@
-file = open("shampoo_sales.csv","r")
-print(file.readline())
-print("no")
-print(file.readlines((17+17)))#restituisce una lista di n righe dove n è tutte le righe del file se input è null oppure m righe contando i caratteri delle righe che legge finchè sono uguali o più dell'input
-print(2)
-print(file.read())
-file.close
-
-file=open("output.txt","w")
-file.write("banana")
-file.close
+def sum_csv(file):
+    ff=open(file,"r")
+    c=0
+    tot=0
+    ff.readline()
+    for line in ff:
+        c=1
+        z=line.split(",")
+        print(z)
+        try:
+            tot+=float(z[1])
+        except:
+            tot+=0
+    ff.close()
+    if c==0:
+        return None
+    return tot
