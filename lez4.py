@@ -7,8 +7,8 @@ class CSVFile():
         a = self.file.readlines()
         b = []
         for item in a:
-            #c=item.replace('\n','')
-            d = item.split(',')
+            c=item.replace('\n','')
+            d = c.split(',')
             b.append(d)
         return b
 #csv=CSVFile('shampoo_sales.csv')
