@@ -43,7 +43,8 @@ class NumericalCSVFile(CSVFile):
             d.append(p)
             
         return d
-c=CSVFile('shampoo_sales.csv')
-print(c.get_data())
-cc=NumericalCSVFile('shampoo_sales.csv')
-print(cc.get_data())
+
+#c=CSVFile('shampoo_sales.csv')
+#print(c.get_data())
+#cc=NumericalCSVFile('shampoo_sales.csv')
+#print(cc.get_data())
