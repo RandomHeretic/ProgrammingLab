@@ -45,7 +45,7 @@ class CSVFile():
                     raise Exception('end not integer')
             if end < start:
                 raise Exception('end less than start')
-            if end>len(a)-1:
+            if end>len(a):
                 raise Exception('end larger than file')
         else:
             end=len(a)
@@ -60,6 +60,3 @@ class CSVFile():
                 b.append(d)
         self.file.close()
         return b
-            
-            
-
