@@ -12,7 +12,6 @@ class CSVFile():
             self.file=open(self.name,"r")
         except:
             print('Errore')
-
         
         try:
             a = self.file.readlines()
