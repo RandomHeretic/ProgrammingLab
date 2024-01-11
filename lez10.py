@@ -1,10 +1,33 @@
 class Model:
+    def __init__(self,window):
+        self.window=window
     def fit(self):
         raise NotImplementedError
     def predict(self):
         raise NotImplementedError
-
-def p(data):
+    def evaluate(self,data):
+        try:
+            sanitize(data)
+        except:
+            raise
+        wiwo=len(data)-self.window
+        if wiwo <= 0:
+            raise Exception
+        for_fit=data[:wiwo]
+        for_test=data[wiwo:]
+        try:
+            self.fit(for_fit)
+        except Exception as e:
+            if isinstance(e,NotImplementedError):
+                pass
+            else:
+                raise
+        eval_mae=0
+        for i in range(0,len(for_test)-3):
+            pred=self.predict(for_test[i:i+3])
+            eval_mae+= abs(pred-for_test[i+4])
+        return eval_mae
+def sanitize(data):
     if not isinstance(data,list):
         raise TypeError
     for i in range(0,len(data)):
@@ -16,6 +39,12 @@ def p(data):
             raise
         except Exception:
             raise
+    return data
+def p(data):
+    try:
+        sanitize(data)
+    except:
+        raise
     prev_data = None
     dev=0
     for item in data:
