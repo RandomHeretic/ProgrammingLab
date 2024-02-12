@@ -14,7 +14,8 @@ class CSVTimeSeriesFile():
             if len(d) == 2 and d[0]%1==0 and d[1]%1==0 and d[0]>0 and d[1]>0 and d[1]<13:
                 return 1
         except:
-            return 0
+            pass
+        return 0
     def check_value(self,value):
         try:
             value=float(value)
@@ -61,6 +62,21 @@ class CSVTimeSeriesFile():
 def compute_increments(time_series,first_year,last_year):
     if not isinstance(first_year,str) or not isinstance(last_year,str):
         raise ExamException('invalid extremes, they should be strings')
+    for i in time_series:
+        try:
+            i[1]=float(i[1])
+            if i[1]%1 != 0 or i[1] <= 0:
+                raise ExamException('time_series_error, incorrect value foud')
+        except:
+            raise ExamException('time_series_error, incorrect value foud')
+        try:
+            ts=i[0].split('-')
+            ts[0]=float(ts[0])
+            ts[1]=float(ts[1])
+            if len(ts) != 2 or ts[0]%1!=0 or ts[1]%1!=0 or ts[0]<1 or ts[1]<1 or ts[1]>12:
+                raise ExamException('time_series_error, incorrect time stamp foud')
+        except:
+            raise ExamException('time_series_error, incorrect time stamp foud')
     f=0
     l=0
     d={}
@@ -93,7 +109,3 @@ def compute_increments(time_series,first_year,last_year):
         value=d.get(ind[i+1])-d.get(ind[i])
         out.update({stringa:value})
     return out
-
-f=CSVTimeSeriesFile('tert.csv')
-ff=f.get_data()
-compute_increments(ff,'1949','1960')
