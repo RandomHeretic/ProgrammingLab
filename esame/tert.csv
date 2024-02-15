@@ -1,13 +1,14 @@
+data,passengers
 1949-01,112
-1949-02,118
+1949-02118
+
 culo
 1999-99,'5'
-19-9,s
+19,-9,s
 1955
 1949-03,132
 1950-01,555
-1951-12,333
 1953-05,888
 ciao
-1960-05,55
-9999,4
+1960-05,55,banana
+Per rilevare gli anni con un incremento nel numero medio di passeggeri, dovete creare una funzione a sé stante (de

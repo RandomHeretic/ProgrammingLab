@@ -6,9 +6,6 @@ class CSVTimeSeriesFile():
          # metodo init
         self.name=name
         
-        if not isinstance(self.name,str): # controllo che mi sia stata data una stringa
-            raise ExamException('file name not str')    
-
     
     def check_date(self,date):
          # metodo per controllare se una stringa è una data Anno-Mese
@@ -18,7 +15,7 @@ class CSVTimeSeriesFile():
             date[0]=float(date[0])
             date[1]=float(date[1])
             
-            if len(date) == 2 and date[0]%1==0 and date[1]%1==0 and date[0]>0 and date[1]>0 and date[1]<13:
+            if len(date) == 2 and date[0]%1==0 and date[1]%1==0 and date[1]>0 and date[1]<13:
                 return 1
         except:
             pass
@@ -50,14 +47,11 @@ class CSVTimeSeriesFile():
         dates=[]
         for i in data:
             dates.append(i[0].split('-'))
-        for i in range(0,len(dates)):
-            for j in range(i+1,len(dates)):
-                
-                if dates[i][0]>dates[j][0]:
-                    return 1
-                
-                if dates[i][0]==dates[j][0] and dates[i][1]>=dates[j][1]:
-                    return 1
+        for i in range(0,len(dates)-1):
+            if int(dates[i][0])>int(dates[i+1][0]):
+                return 1
+            if int(dates[i][0])==int(dates[i+1][0]) and int(dates[i][1])>=int(dates[i+1][1]):
+                return 1
         return 0
 
     
@@ -75,7 +69,8 @@ class CSVTimeSeriesFile():
             buffer=item.replace('\n','').split(',')
             
             if len(buffer) >= 2:
-                if self.check_date(buffer[0])==1 and self.check_value(buffer[1]):
+                if self.check_date(buffer[0]) and self.check_value(buffer[1]):
+                    buffer[1]=int(buffer[1])
                     output.append(buffer)
         
         if self.check_duplicate(output): # controllo duplicati
@@ -83,6 +78,8 @@ class CSVTimeSeriesFile():
         
         if self.check_order(output): # controllo ordine
             raise ExamException('data not in order')
+        
+        file.close()
         
         return output
 
@@ -99,7 +96,7 @@ def compute_increments(time_series,first_year,last_year): # funzione per gli inc
             if i[1]%1 != 0 or i[1] <= 0:
                 raise ExamException('time_series_error, incorrect value foud')
         except:
-            raise ExamException('time_series_error, incorrect value foud')
+            raise ExamException('time_series_error, incorrect value foud') from None
         try:
             time_stamp=i[0].split('-')
             time_stamp[0]=float(time_stamp[0])
@@ -107,7 +104,7 @@ def compute_increments(time_series,first_year,last_year): # funzione per gli inc
             if len(time_stamp) != 2 or time_stamp[0]%1!=0 or time_stamp[1]%1!=0 or time_stamp[0]<1 or time_stamp[1]<1 or time_stamp[1]>12:
                 raise ExamException('time_series_error, incorrect time stamp foud')
         except:
-            raise ExamException('time_series_error, incorrect time stamp foud')
+            raise ExamException('time_series_error, incorrect time stamp foud') from None
     
     f=0 # variabile a fini di controllo
     l=0 # variabile a fini di controllo
@@ -129,7 +126,7 @@ def compute_increments(time_series,first_year,last_year): # funzione per gli inc
         if i[0].split('-')[0] == last_year:
             l=1
     
-    if l==0 or f==0 or first_year==last_year:
+    if l==0 or f==0:
          # se non trovo l'inizio o la fine dell'intervallo 
          # o se questo è tra lo stesso anno alzo un errore
         raise ExamException('invalid extremes, not found in time_series')
@@ -145,3 +142,9 @@ def compute_increments(time_series,first_year,last_year): # funzione per gli inc
         value=d.get(ind[i+1])-d.get(ind[i])
         out.update({stringa:value})
     return out
+
+
+f=CSVTimeSeriesFile('tert.csv')
+ff=f.get_data()
+print(compute_increments(ff,'1949','1960'))
+print(compute_increments([['1949-01',1],['1949-0',1],['1960-01',1]],'1949','1960'))
