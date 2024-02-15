@@ -142,9 +142,3 @@ def compute_increments(time_series,first_year,last_year): # funzione per gli inc
         value=d.get(ind[i+1])-d.get(ind[i])
         out.update({stringa:value})
     return out
-
-
-f=CSVTimeSeriesFile('tert.csv')
-ff=f.get_data()
-print(compute_increments(ff,'1949','1960'))
-print(compute_increments([['1949-01',1],['1949-0',1],['1960-01',1]],'1949','1960'))
