@@ -106,39 +106,41 @@ def compute_increments(time_series,first_year,last_year): # funzione per gli inc
         except:
             raise ExamException('time_series_error, incorrect time stamp foud') from None
     
-    f=0 # variabile a fini di controllo
-    l=0 # variabile a fini di controllo
-    d={} # dizionario temporneo
+    first=0 # variabile a fini di controllo
+    last=0 # variabile a fini di controllo
+    dict={} # dizionario temporneo
     
     for i in time_series: # cerco per gli anni richiesti
-        if i[0].split('-')[0] == first_year:
-            f=1
-        if f==1 and l==0:
-            if d.get(i[0].split('-')[0]) is None: 
+        stringa=i[0].split('-')[0]
+        if stringa == first_year:
+            first=1
+        if (first==1 and last==0) or stringa==last_year:
+            if dict.get(stringa) is None: 
                  # se un anno non è nel dizionario lo aggiungo
-                d.update({i[0].split('-')[0]: [int(i[1]),1]})
+                dict.update({stringa: [int(i[1]),1]})
             else:
                  # se c'è già lo aggiorno aggiungendo un mese e il numero di passeggeri
-                sup=d.get(i[0].split('-')[0])
-                sup[0] += int(i[1])
-                sup[1] += 1
-                d.update({i[0].split('-')[0]: sup})
-        if i[0].split('-')[0] == last_year:
-            l=1
+                buffer=dict.get(stringa)
+                buffer[0] += int(i[1])
+                buffer[1] += 1
+                dict.update({stringa: buffer})
+        if stringa == last_year:
+            last=1
     
-    if l==0 or f==0:
+    if last==0 or first==0:
          # se non trovo l'inizio o la fine dell'intervallo 
          # o se questo è tra lo stesso anno alzo un errore
         raise ExamException('invalid extremes, not found in time_series')
     
     ind=[] # array dove inserisco gli indirizzi del dizionario
-    for i in d:
+    for i in dict:
         ind.append(i)
-        d[i]=d[i][0]/d[i][1] # media valori
+        dict[i]=dict[i][0]/dict[i][1] # media valori
     
     out={} # variabile per l'output
     for i in range(0,len(ind)-1): # calcolo l'output
         stringa=ind[i]+'-'+ind[i+1]
-        value=d.get(ind[i+1])-d.get(ind[i])
+        value=dict.get(ind[i+1])-dict.get(ind[i])
         out.update({stringa:value})
     return out
+
